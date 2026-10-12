@@ -1,4 +1,6 @@
-COXY WALLET AI MUSIC CONTEST – PROJECT DOCUMENTATION #1. Introduction
+COXY WALLET AI MUSIC CONTEST – PROJECT DOCUMENTATION 4 SEPTEMBER 2026
+
+#1. Introduction
 
 -The Coxy Wallet AI Music Contest is a web-based platform created to give people an opportunity to take part in a music competition using songs generated with artificial intelligence. The website allows users to enter the competition, submit their own AI-generated music, listen to songs submitted by other participants, and vote for the songs they like the most.
 
