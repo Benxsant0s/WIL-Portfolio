@@ -1,0 +1,2 @@
+Paste the output of:  runghc -isrc tests/Spec.hs
+(or: cabal test)  here, with the date and GHC version (ghc --version).
