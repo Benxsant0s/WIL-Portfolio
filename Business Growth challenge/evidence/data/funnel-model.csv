@@ -1,0 +1,4 @@
+scenario,visits,start_rate,starts,completion_rate,completions,lead_rate,leads,review_rate,reviews_held,close_rate,new_client_projects,lead_to_client_pct
+Low,2000,0.2,400,0.6,240,0.25,60,0.08,5,0.2,1,1.6
+Base,4000,0.25,1000,0.7,700,0.4,280,0.12,34,0.25,8,3.0
+High,8000,0.3,2400,0.75,1800,0.5,900,0.15,135,0.3,40,4.5

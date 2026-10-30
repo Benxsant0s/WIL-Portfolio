@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Tobb Digital Readiness Check</title>
+<style>
+:root{--ink:#0f2e3a;--paper:#f4f8f7;--card:#fff;--line:#cbd8d5;--mint:#1f9a74;--mint-d:#12684e;--amber:#b87513;--red:#b23a3a;--mute:#4d6670;color-scheme:light}
+@media (prefers-color-scheme:dark){:root{--ink:#e4f0ee;--paper:#0d1d24;--card:#14293320;--line:#2c4650;--mint:#4cc9a0;--mint-d:#7fe0bf;--amber:#e8b157;--red:#e48080;--mute:#9db4ba;color-scheme:dark}}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--paper);color:var(--ink);font:17px/1.55 "Segoe UI",system-ui,-apple-system,sans-serif;padding:env(safe-area-inset-top,0) 0 env(safe-area-inset-bottom,0)}
+main{max-width:760px;margin:0 auto;padding:28px 18px 64px}
+h1,h2,h3{font-family:Rockwell,"Roboto Slab","Courier New",Georgia,serif;line-height:1.2;margin:0 0 .5em}
+h1{font-size:2.1rem}h2{font-size:1.45rem}h3{font-size:1.1rem}
+p{margin:0 0 1em}
+.brand{font-weight:600;color:var(--mint-d);margin-bottom:1.2em}
+.lead{font-size:1.15rem;color:var(--mute)}
+button,a.btn{font:inherit;font-weight:600;border-radius:8px;border:2px solid var(--mint-d);background:var(--mint-d);color:#fff;padding:.7em 1.2em;cursor:pointer;text-decoration:none;display:inline-block}
+button.ghost,a.btn.ghost{background:transparent;color:var(--mint-d)}
+button:disabled{opacity:.45;cursor:not-allowed}
+:focus-visible{outline:3px solid var(--amber);outline-offset:2px}
+label.f{display:block;font-weight:600;margin:0 0 1em}
+input[type=text],select{display:block;width:100%;margin-top:.3em;font:inherit;padding:.6em;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--ink)}
+.steps{display:flex;gap:4px;margin:0 0 6px;padding:0;list-style:none}
+.steps li{flex:1;height:8px;border-radius:4px;background:var(--line)}
+.steps li.done{background:var(--mint)}.steps li.now{background:var(--ink)}
+.stepname{color:var(--mute);margin:0 0 1.2em;font-size:.95rem}
+fieldset{border:0;padding:0;margin:0 0 1.6em}
+legend{font-weight:600;padding:0;margin-bottom:.6em}
+.opt{display:flex;gap:.7em;align-items:flex-start;padding:.65em .8em;margin:0 0 .4em;border:1px solid var(--line);border-radius:8px;background:var(--card);cursor:pointer}
+.opt:has(input:checked){border-color:var(--mint);box-shadow:inset 4px 0 0 var(--mint)}
+.opt input{margin-top:.35em;accent-color:var(--mint-d)}
+.nav{display:flex;justify-content:space-between;gap:12px;margin-top:1.5em}
+.hide{display:none}
+.score{display:flex;gap:24px;align-items:center;flex-wrap:wrap;margin-bottom:1.5em}
+.big{font:700 4rem/1 Rockwell,"Roboto Slab",Georgia,serif}
+.band{font-weight:700}
+.bar{display:flex;align-items:center;gap:10px;margin:.35em 0}
+.bar span.n{flex:0 0 190px;font-size:.95rem}
+.bar .t{flex:1;height:12px;background:var(--line);border-radius:6px;overflow:hidden}
+.bar .t i{display:block;height:100%}
+.bar b{flex:0 0 3em;text-align:right}
+.panel{border:1px solid var(--line);background:var(--card);border-radius:10px;padding:16px 18px;margin:0 0 1.2em}
+ol.wins{padding-left:1.2em;margin:0}ol.wins li{margin:0 0 .6em}
+.svc{display:flex;gap:8px;flex-wrap:wrap;margin:.3em 0 .8em}
+.tag{border:1px solid var(--mint-d);color:var(--mint-d);border-radius:999px;padding:.1em .7em;font-size:.88rem}
+.actions{display:flex;gap:10px;flex-wrap:wrap;margin:1em 0}
+.small{font-size:.88rem;color:var(--mute)}
+svg text{fill:var(--ink);font:13px "Segoe UI",system-ui,sans-serif}
+@media (max-width:560px){.bar span.n{flex-basis:120px}h1{font-size:1.7rem}.big{font-size:3.2rem}}
+@media print{.nav,.actions,.noprint{display:none!important}body{background:#fff;color:#000}}
+</style>
+</head>
+<body>
+<main>
+<p class="brand">Tobb Technologies &middot; Coxygen Universities</p>
+
+<section id="intro">
+<h1>How ready is your organisation for the digital economy?</h1>
+<p class="lead">Answer 24 quick questions. You get a score, a chart and three practical next steps straight away.</p>
+<label class="f">Organisation name (optional)<input type="text" id="org" autocomplete="organization"></label>
+<label class="f">Type of organisation
+<select id="sector"><option>Small business</option><option>School or college</option><option>NPO or clinic</option><option>Professional practice</option><option>Software company</option><option>Other</option></select></label>
+<p class="small">Your answers stay in this browser tab. Nothing is saved or sent unless you choose to share your results with Tobb at the end.</p>
+<button id="start">Start the check</button>
+</section>
+
+<section id="quiz" class="hide" aria-live="polite">
+<ul class="steps" id="steps" aria-hidden="true"></ul>
+<p class="stepname" id="stepname"></p>
+<div id="qs"></div>
+<div class="nav"><button class="ghost" id="back">Back</button><button id="next" disabled>Next</button></div>
+</section>
+
+<section id="result" class="hide" aria-live="polite" tabindex="-1">
+<h2 id="rtitle">Your results</h2>
+<div class="score"><div class="big" id="total"></div><div><div class="band" id="band"></div><div class="small" id="bandtxt"></div></div></div>
+<div class="panel"><svg id="radar" viewBox="0 0 420 340" role="img" aria-label="Radar chart of your six pillar scores" width="100%"></svg></div>
+<div id="bars"></div>
+<h3>Your three quick wins</h3>
+<div class="panel"><ol class="wins" id="wins"></ol></div>
+<h3>Where Tobb and Coxygen can help</h3>
+<div id="svcs"></div>
+<div class="actions noprint">
+<a class="btn" id="wa" target="_blank" rel="noopener">Share results on WhatsApp</a>
+<a class="btn ghost" id="mail">Email results to Tobb</a>
+<button class="ghost" id="copy">Copy summary</button>
+<button class="ghost" onclick="window.print()">Print or save as PDF</button>
+<button class="ghost" id="again">Retake</button>
+</div>
+<p class="small">These results are indicative and based only on your own answers. The data protection pillar is a readiness indicator, not a legal opinion or compliance certificate; speak to a qualified legal adviser about your POPIA obligations. Sharing your results is optional and starts a conversation only if you ask for one.</p>
+</section>
+</main>
+
+<script>
+const P=[
+{n:"Online presence",s:["S5014 Standard website","SE006 SEO","WE005 Branded email","LD007 / GD009 Logo and design"],q:[
+["Does your organisation have a website?",["No website","A social media page only","A basic site that is rarely updated","A current, mobile-friendly site"],"Launch a simple five-page website (Home, About, Services, Contact)."],
+["Can customers find you on Google?",["Not at all","Only if they search our exact name","We have a Google Business Profile","Profile, reviews and local search work"],"Claim your Google Business Profile and ask happy customers for reviews."],
+["Which email addresses does your team use for work?",["Free personal addresses","A mix of both","Branded addresses for most staff","Branded addresses for everyone"],"Move everyone to branded email on your own domain."],
+["How often is your website or page updated?",["Never","About once a year","About once a quarter","Monthly or more"],"Set a monthly routine to update prices, news and contact details."]]},
+{n:"Operations and systems",s:["CR31 CRM","ID39 Inventory and database","PM37 Project management","Process flow, design and integration"],q:[
+["How do you track customers and enquiries?",["Memory or paper","Spreadsheets","A shared tool, used inconsistently","A CRM used by the whole team"],"Start a simple CRM so no enquiry is lost."],
+["How do you manage stock, orders or bookings?",["On paper","In spreadsheets","Software for some of it","One connected system"],"Move stock, orders or bookings into one shared system."],
+["How are projects and tasks tracked?",["Verbally","Lists or chat messages","A tool used by some people","A tool with owners and due dates"],"Adopt a project tool with owners and due dates."],
+["How much repeat admin (invoices, reminders, reports) is automated?",["None","A little","Some","Most"],"Automate invoices, reminders and weekly reports first."]]},
+{n:"Payments and e-commerce",s:["CS017 Simple online store","CA20 Advanced commercial site","ECW4 E-commerce application"],q:[
+["Can customers pay you electronically?",["Cash or cheque only","EFT only","EFT and card machine","Online payment links or store"],"Add online payment links or a simple online store."],
+["Do you take orders online?",["No","Informally through chat or social media","Through a basic order form","Through a full online store"],"Set up a simple order form or online store."],
+["How do you match payments to invoices?",["By hand from bank statements","In a spreadsheet","With accounting software","Automatically, connected to sales"],"Use accounting software that matches payments automatically."],
+["Do customers get digital receipts and order updates?",["No","Sometimes, written by hand","Yes, sent manually","Yes, sent automatically"],"Send automatic receipts and order updates."]]},
+{n:"Data protection and security",s:["BU008 Backups","CS003 Cloud storage","WH002 Secure hosting and support","Coxygen: Cybersecurity and Digital Skills"],q:[
+["Do you have a named Information Officer and a published privacy notice?",["I am not sure what these are","I know of them but have neither","We have one of the two","We have both"],"Name an Information Officer and publish a privacy notice; confirm your duties with a legal adviser."],
+["How are your business files backed up?",["They are not","Manually, now and then","Automatically, but never tested","Automatically, with restores tested"],"Set up automatic daily backups and test a restore."],
+["Who can access customer and staff data?",["Everyone, often with shared passwords","Most people","Role-based for key systems","Role-based and reviewed regularly"],"Give each person their own login and limit access by role."],
+["Do you ask permission before sending marketing messages?",["No","Sometimes","Usually, with an opt-out","Always, with recorded consent and opt-out"],"Record consent and add an opt-out to every marketing message."]]},
+{n:"Skills and people",s:["Tobb onsite or online training","Coxygen Training Centre: Full-Stack Development","Coxygen: Cybersecurity and Digital Skills","Coxygen: AI and Emerging Technology"],q:[
+["How confident is your team with the digital tools their work needs?",["Most struggle","A few are confident","Most are confident","All are confident and help others"],"Run a short skills audit and train the biggest gap first."],
+["Is there a plan for building digital skills?",["No","Ad hoc","A yearly plan","An ongoing plan with a budget"],"Write a simple yearly digital skills plan, with training from Tobb or Coxygen."],
+["How aware is your team of phishing and online scams?",["Not aware","Some awareness","An annual briefing","Regular training and tests"],"Hold a phishing awareness session for everyone."],
+["Does someone own digital improvement in your organisation?",["No one","Informally, someone helps","A part-time role","A dedicated person or IT partner"],"Name one person to own digital improvement, backed by an IT partner."]]},
+{n:"Infrastructure and hosting",s:["DR001 / WH002 Domain and hosting","CS003 Cloud solutions","Network engineering and hardware"],q:[
+["Where is your website or main system hosted?",["I do not know","Free or cheap hosting with outages","Reliable shared hosting","Managed hosting with monitoring"],"Move to reliable managed hosting with monitoring."],
+["How reliable is your internet and network?",["Frequent outages","Occasional outages","Mostly reliable","Reliable, with a backup connection"],"Review your network and add a backup connection."],
+["How current is your equipment?",["Mostly old and failing","A mixed bag","Mostly current","Managed on a replacement cycle"],"Plan equipment upgrades and recycle old devices."],
+["When something breaks, how fast can you get help?",["There is no support","Within days","The same day","Within agreed response times"],"Agree a support plan with response times."]]}];
+const BANDS=[[80,"Advanced","Strong foundations. Focus on optimising and automating."],[60,"Established","Good base with clear gaps to close."],[35,"Emerging","Some foundations are in place. A focused 90-day plan will pay off."],[0,"Foundation","You are at the start. The quick wins below are the best place to begin."]];
+const $=id=>document.getElementById(id);let step=0;const ans=P.map(p=>p.q.map(()=>null));
+const col=v=>v>=70?"var(--mint)":v>=40?"var(--amber)":"var(--red)";
+function show(id){["intro","quiz","result"].forEach(s=>$(s).classList.toggle("hide",s!==id));window.scrollTo(0,0)}
+function draw(){const p=P[step];$("steps").innerHTML=P.map((_,i)=>`<li class="${i<step?"done":i===step?"now":""}"></li>`).join("");
+$("stepname").textContent=`Part ${step+1} of ${P.length}: ${p.n}`;
+$("qs").innerHTML=p.q.map((q,i)=>`<fieldset><legend>${q[0]}</legend>${q[1].map((o,j)=>`<label class="opt"><input type="radio" name="q${i}" value="${j}"${ans[step][i]===j?" checked":""}><span>${o}</span></label>`).join("")}</fieldset>`).join("");
+$("qs").querySelectorAll("input").forEach(el=>el.onchange=()=>{ans[step][+el.name.slice(1)]=+el.value;chk()});
+$("back").style.visibility=step?"visible":"hidden";$("next").textContent=step===P.length-1?"See my results":"Next";chk()}
+function chk(){$("next").disabled=ans[step].some(a=>a===null)}
+$("start").onclick=()=>{step=0;show("quiz");draw()};
+$("back").onclick=()=>{if(step){step--;draw();window.scrollTo(0,0)}};
+$("next").onclick=()=>{if(step<P.length-1){step++;draw();window.scrollTo(0,0)}else results()};
+$("again").onclick=()=>{ans.forEach(a=>a.fill(null));step=0;show("intro")};
+let summary="";
+function results(){const ps=P.map((p,i)=>Math.round(ans[i].reduce((a,b)=>a+b,0)/12*100));const tot=Math.round(ps.reduce((a,b)=>a+b,0)/ps.length);
+const b=BANDS.find(x=>tot>=x[0]);$("total").textContent=tot;$("band").textContent=`${b[1]} (score out of 100)`;$("bandtxt").textContent=b[2];
+$("bars").innerHTML=P.map((p,i)=>`<div class="bar"><span class="n">${p.n}</span><span class="t"><i style="width:${ps[i]}%;background:${col(ps[i])}"></i></span><b>${ps[i]}</b></div>`).join("");
+radar(ps);
+const all=[];P.forEach((p,i)=>p.q.forEach((q,j)=>all.push({s:ans[i][j],pi:i,i:j,f:q[2]})));
+all.sort((a,b)=>a.s-b.s||ps[a.pi]-ps[b.pi]||a.pi-b.pi||a.i-b.i);
+const wins=[];const used={};for(const w of all){if(wins.length===3||w.s>=3)break;if((used[w.pi]||0)<2){wins.push(w);used[w.pi]=(used[w.pi]||0)+1}}
+$("wins").innerHTML=wins.length?wins.map(w=>`<li>${w.f} <span class="small">(${P[w.pi].n})</span></li>`).join(""):"<li>Every answer scored at the top level. Ask Tobb about optimisation, integration and ongoing support.</li>";
+const low=ps.map((v,i)=>[v,i]).filter(x=>x[0]<60).sort((a,b)=>a[0]-b[0]).slice(0,3);
+$("svcs").innerHTML=low.length?low.map(([v,i])=>`<div class="panel"><h3>${P[i].n} (${v}/100)</h3><div class="svc">${P[i].s.map(s=>`<span class="tag">${s}</span>`).join("")}</div></div>`).join(""):`<div class="panel">No pillar scored below 60. Ask Tobb about optimisation, integration and support plans.</div>`;
+const org=$("org").value.trim()||"(not given)";
+summary=`Tobb Digital Readiness Check\nOrganisation: ${org} (${$("sector").value})\nOverall: ${tot}/100 - ${b[1]}\n`+P.map((p,i)=>`${p.n}: ${ps[i]}`).join("\n")+`\nQuick wins:\n`+(wins.length?wins.map((w,k)=>`${k+1}. ${w.f}`).join("\n"):"None - top scores throughout")+`\nI would like a free 30-minute review.`;
+$("wa").href="https://wa.me/27731820631?text="+encodeURIComponent(summary);
+$("mail").href="mailto:admin@tobb.io?subject="+encodeURIComponent("Digital Readiness Check results: "+org)+"&body="+encodeURIComponent(summary);
+show("result");$("result").focus()}
+$("copy").onclick=async()=>{try{await navigator.clipboard.writeText(summary);$("copy").textContent="Copied"}catch(e){$("copy").textContent="Copy failed"}};
+function radar(v){const cx=210,cy=170,R=110,n=v.length;const pt=(i,r)=>{const a=-Math.PI/2+i*2*Math.PI/n;return[cx+r*Math.cos(a),cy+r*Math.sin(a)]};let s="";
+[25,50,75,100].forEach(g=>s+=`<polygon points="${v.map((_,i)=>pt(i,R*g/100).join(",")).join(" ")}" fill="none" stroke="var(--line)"/>`);
+v.forEach((_,i)=>{const[x,y]=pt(i,R);s+=`<line x1="${cx}" y1="${cy}" x2="${x}" y2="${y}" stroke="var(--line)"/>`;const[lx,ly]=pt(i,R+22);s+=`<text x="${lx}" y="${ly}" text-anchor="${lx<cx-5?"end":lx>cx+5?"start":"middle"}" dominant-baseline="middle">${P[i].n.split(" and ")[0]}</text>`});
+s+=`<polygon points="${v.map((x,i)=>pt(i,R*x/100).join(",")).join(" ")}" fill="var(--mint)" fill-opacity=".3" stroke="var(--mint-d)" stroke-width="2.5"/>`;
+v.forEach((x,i)=>{const[px,py]=pt(i,R*x/100);s+=`<circle cx="${px}" cy="${py}" r="4" fill="var(--mint-d)"/>`});$("radar").innerHTML=s}
+</script>
+</body>
+</html>
