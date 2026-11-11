@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Donation Tracker</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="topbar">
+  <div class="brand"><span class="logo">♥</span><div><h1>Donation Tracker</h1><small>Charity giving, powered by AI</small></div></div>
+  <button class="icon-btn" id="themeBtn" aria-label="Toggle theme">◐</button>
+</header>
+
+<main class="container">
+  <section class="stats" aria-label="Summary">
+    <div class="card stat"><span>Total raised</span><strong id="statTotal">R0.00</strong></div>
+    <div class="card stat"><span>Donations</span><strong id="statCount">0</strong></div>
+    <div class="card stat"><span>Average gift</span><strong id="statAvg">R0.00</strong></div>
+    <div class="card stat"><span>Largest gift</span><strong id="statMax">R0.00</strong></div>
+  </section>
+
+  <section class="grid">
+    <div class="card">
+      <h2>Add a donation</h2>
+      <form id="donationForm" novalidate>
+        <label>Donor name<input id="donorName" maxlength="100" placeholder="e.g. Thabo Mokoena" required></label>
+        <div class="row">
+          <label>Amount (R)<input id="amount" type="number" min="1" step="0.01" placeholder="0.00" required></label>
+          <label>Purpose
+            <select id="purpose"><option>Food</option><option>Education</option><option>Health</option><option>Shelter</option><option>Other</option></select>
+          </label>
+        </div>
+        <label>Cardano transaction ID <em>(optional)</em>
+          <input id="transactionId" placeholder="64-character transaction hash" autocomplete="off" spellcheck="false">
+        </label>
+        <div class="row actions">
+          <button type="button" class="btn ghost" id="verifyTxBtn">Verify transaction</button>
+          <button type="submit" class="btn primary">Save donation</button>
+        </div>
+        <p id="cardanoResult" class="hint" role="status"></p>
+      </form>
+    </div>
+
+    <div class="card">
+      <h2>Where the money goes</h2>
+      <div id="breakdown" class="breakdown"><p class="empty">No data yet.</p></div>
+    </div>
+  </section>
+
+  <section class="card">
+    <div class="card-head">
+      <h2>Donations</h2>
+      <div class="tools">
+        <input id="search" type="search" placeholder="Search donors…" aria-label="Search donors">
+        <select id="filterPurpose" aria-label="Filter by purpose"><option value="">All purposes</option><option>Food</option><option>Education</option><option>Health</option><option>Shelter</option><option>Other</option></select>
+        <a class="btn ghost" href="export_csv.php" download>⬇ Export CSV</a>
+      </div>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Donor</th><th class="num">Amount</th><th>Purpose</th><th>Cardano</th><th>Date</th></tr></thead>
+        <tbody id="donationsTable"><tr><td colspan="5" class="empty">Loading…</td></tr></tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>AI assistant</h2>
+    <p class="hint">Ask about totals, averages, top donors or the breakdown by purpose.</p>
+    <div class="chips" id="chips">
+      <button class="chip">How much has been donated?</button>
+      <button class="chip">Who is the top donor?</button>
+      <button class="chip">Breakdown by purpose</button>
+      <button class="chip">What is the average donation?</button>
+    </div>
+    <div class="ask">
+      <input id="question" placeholder="Ask a question…" maxlength="500">
+      <button class="btn primary" id="askAiBtn">Ask AI</button>
+    </div>
+    <div id="aiResponse" class="answer" aria-live="polite" hidden></div>
+  </section>
+</main>
+
+<div id="toasts" class="toasts" aria-live="polite"></div>
+<script src="app.js"></script>
+</body>
+</html>
